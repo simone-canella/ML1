@@ -73,13 +73,40 @@ class Nbayes:
         
         y_predict = [] #list of predictions based on the higest probability between yes or no (max(P(class_priors) * P(class_likelihoods)))
 
-        #print(self.likelihoods["no"])
-
-        for yes_no in self.class_priors:
+        '''
+        #PROBLEM: print only one value#
+        for key in self.class_priors:
+            class_probabilities = {}
+            probability = self.class_priors[key]
             for _row, feature in x_test.iterrows():
                 for feature_key, feature_value in feature.to_dict().items():
-                    print(feature_key,feature_value)
-                    print(f"{feature_key} {self.likelihoods[yes_no][feature_key][feature_value]}")
+                    #print(feature_key,feature_value)
+                    #print(f"{feature_key} {self.likelihoods[key][feature_key][feature_value]}")
+                    probability *= self.likelihoods[key][feature_key][feature_value]
+            class_probabilities[key] = probability
+        '''     
+        for _row, feature in x_test.iterrows():
+            class_probabilities = {}
+
+            for key in self.class_priors:
+                probability = self.class_priors[key]
+
+                for feature_key, feature_value in feature.to_dict().items():
+                    probability *= self.likelihoods[key][feature_key][feature_value]
+
+                class_probabilities[key] = probability
+
+            best_class = max(class_probabilities,  key=class_probabilities.get)
+
+            y_predict.append(best_class)
+
+            if self.DEBUG == True:
+                print("class probabilities: ", class_probabilities)
+                print("predicted class: ", best_class)
+
+        return y_predict
+
+                    
 
         '''
         for _row, value in x_test.iterrows():
@@ -119,8 +146,6 @@ class Nbayes:
                     the number of instances of class c that have variable x == value v...
                     ...divided by the number of instances of class c
         '''
-        
-
            
 
     def test(self, X_test, y_test):
