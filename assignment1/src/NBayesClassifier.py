@@ -11,7 +11,6 @@ class Nbayes:
         self.DEBUG = False
 
     def fit(self, x_train, y_train):
-        
         unique_classes = y_train.unique() # unique classes
 
         self.class_frequency = y_train.value_counts().to_dict() #count how many times the class appears in the y_train
@@ -25,19 +24,38 @@ class Nbayes:
         if self.DEBUG == True:
             print("class priors: " ,self.class_priors.items())
 
+        #IMPLEMENTATION OF LAPLACE SMOOTHING
+        laplaceSmoothingFactor = 1
+        levels = {col: x_train[col].unique() for col in x_train.columns}
 
         for key in unique_classes:
             subset = x_train[y_train == key] #create a a subset of x_train where appear corresponding value of y_train[key]
+            
             self.likelihoods[key] = {}
+
+            numberOfSample = len(subset) #number of samples for this class
             
             for feature in subset.columns:
-                count = subset[feature].value_counts() #count how many value occurs in the subset
-                conditional_probability = (count / len(subset)).to_dict() #calculate conditional probability (number of i-value / number of total value)
+                numberOfPossibleLevels = len(levels[feature]) #number of possible values for this feature
+                count = subset[feature].value_counts().to_dict() #count how many value occurs in the subset
+                conditional_probability = {}
+
+                for value in levels[feature]:
+                    n_i = count.get(value, 0) #return value (Es. sunny, overcast, rainy) or '0'
+                    
+                    conditional_probability[value] = ((n_i + laplaceSmoothingFactor) / (numberOfSample + (laplaceSmoothingFactor * numberOfPossibleLevels))) #calculate conditional probability (number of i-value / number of total value)
 
                 self.likelihoods[key][feature] = conditional_probability #populate the likelihoods
             
-            if self.DEBUG == True:
-                print("class likelihoods", self.likelihoods)
+        if self.DEBUG == True: #control likelihoods values and the sum for each probability == 1
+            print("class likelihoods", self.likelihoods)
+
+            for c in self.likelihoods:
+                print(f"\nChecking class: {c}")
+                for f, probs in self.likelihoods[c].items():
+                    total = sum(probs.values())
+                    print(f"  {f}: sum = {total:.3f}")
+
 
         '''    
         for key in unique_classes:  
@@ -60,14 +78,13 @@ class Nbayes:
         
         y_predict = [] #list of predictions based on the higest probability between yes or no (max(P(class_priors) * P(class_likelihoods)))
 
-        print(self.likelihoods["no"])
+        #print(self.likelihoods["no"])
 
         for yes_no in self.class_priors:
             for _row, feature in x_test.iterrows():
-                for fk, fv in feature.to_dict().items():
-                    # print(fk,fv)
-                    print(f"{fk} {self.likelihoods[yes_no][fk][fv]}")
-
+                for feature_key, feature_value in feature.to_dict().items():
+                    print(feature_key,feature_value)
+                    print(f"{feature_key} {self.likelihoods[yes_no][feature_key][feature_value]}")
 
         '''
         for _row, value in x_test.iterrows():

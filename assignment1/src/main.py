@@ -35,7 +35,7 @@ y_train = df_weather.iloc[:, -1] #select last column
 if DEBUG == True:
     print("TRAIN EFFECT: \n", y_train, "\n")
 
-
+''' TO DELETE!!!!!!!
 #COMPUTE NUMBER OF LEVELS:
 levels = list(range(len(x_train.columns))) #create a list that is big as the number of columns of x_train
 
@@ -44,6 +44,7 @@ for i in range(0, len(x_train.columns)):
 
 if DEBUG == True:
     print("LEVELS FOR EACH CLASS: \n", levels, "\n")
+'''
 
 '''
 ---------------------
@@ -54,6 +55,12 @@ TASK2.1: FIT METHOD
 classifier = Nbayes()
 
 classifier.fit(x_train, y_train)
+
+'''
+---------------------
+TASK2.2: PREDICT METHOD
+---------------------
+'''
 
 classifier.predict(x_train)
 
