@@ -8,27 +8,20 @@ class Nbayes:
         self.class_priors = {} 
         self.likelihoods = {}
 
-        self.DEBUG = False
+        self.DEBUG = True
 
     def fit(self, x_train, y_train):
         unique_classes = y_train.unique() # unique classes
 
-        self.class_frequency = y_train.value_counts().to_dict() #count how many times the class appears in the y_train
-        
-        if self.DEBUG == True:
-            print("class frequency: ",self.class_frequency.items())
-
-        for key in unique_classes:
-            self.class_priors[key] = self.class_frequency[key] / len(y_train) #compute the probability of occuring a class
-
-        if self.DEBUG == True:
-            print("class priors: " ,self.class_priors.items())
+        self.class_frequency = y_train.value_counts().to_dict() #count how many times the class appears in the y_train        
 
         #IMPLEMENTATION OF LAPLACE SMOOTHING
         laplaceSmoothingFactor = 1
         levels = {col: x_train[col].unique() for col in x_train.columns}
 
         for key in unique_classes:
+            self.class_priors[key] = self.class_frequency[key] / len(y_train) #compute the probability of occuring a class
+
             subset = x_train[y_train == key] #create a a subset of x_train where appear corresponding value of y_train[key]
             
             self.likelihoods[key] = {}
@@ -48,6 +41,8 @@ class Nbayes:
                 self.likelihoods[key][feature] = conditional_probability #populate the likelihoods
             
         if self.DEBUG == True: #control likelihoods values and the sum for each probability == 1
+            print("class frequency: ",self.class_frequency.items())
+            print("class priors: " ,self.class_priors.items())
             print("class likelihoods", self.likelihoods)
 
             for c in self.likelihoods:
