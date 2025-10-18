@@ -60,22 +60,13 @@ class Nbayes:
         
         y_predict = [] #list of predictions based on the higest probability between yes or no (max(P(class_priors) * P(class_likelihoods)))
 
+        print(self.likelihoods["no"])
+
         for yes_no in self.class_priors:
-            # print(f"{yes_no}")
-        
             for _row, feature in x_test.iterrows():
-                # print(f"{feature.Outlook} / {feature.Temperature}")
-                # rmc = feature.Temperature
-
-                for feature_dict in feature.to_dict():
-                    # print(f"{feature_dict}")
-                    zzz = getattr(feature, feature_dict)
-                    print(f"{zzz} {self.likelihoods[yes_no][feature_dict][zzz]}")
-
-                    # for value in feature_dict:
-
-
-                    # print(f"{self.likelihoods[yes_no][feature_dict]}")
+                for fk, fv in feature.to_dict().items():
+                    # print(fk,fv)
+                    print(f"{fk} {self.likelihoods[yes_no][fk][fv]}")
 
 
         '''
