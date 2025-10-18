@@ -58,21 +58,40 @@ class Nbayes:
         if not self.trained:
             raise ValueError
         
-        y_predict = [] #list of predictions
-        discarded_indices = [] #list of 
+        y_predict = [] #list of predictions based on the higest probability between yes or no (max(P(class_priors) * P(class_likelihoods)))
 
-        # max(P(class_priors) * P(class_likelihoods))
-
-        for key in self.class_priors:
-            conditional_probability = self.class_priors[key]
-            for _, row in x_test.iterrows():
-                conditional_probability *= self.likelihoods[key][row]
-            print(conditional_probability)
+        for yes_no in self.class_priors:
+            # print(f"{yes_no}")
         
+            for _row, feature in x_test.iterrows():
+                # print(f"{feature.Outlook} / {feature.Temperature}")
+                # rmc = feature.Temperature
+
+                for feature_dict in feature.to_dict():
+                    # print(f"{feature_dict}")
+                    zzz = getattr(feature, feature_dict)
+                    print(f"{zzz} {self.likelihoods[yes_no][feature_dict][zzz]}")
+
+                    # for value in feature_dict:
 
 
-        print(self.class_priors)
-        print(self.likelihoods['yes'])
+                    # print(f"{self.likelihoods[yes_no][feature_dict]}")
+
+
+        '''
+        for _row, value in x_test.iterrows():
+            #print(f"row: {row}, Outlook: {value.Outlook}, Temperature: {value.Temperature}, Humidity: {value.Humidity}, Windy: {value.Windy}")
+            print(f"Outlook: {value.Outlook}, Temperature: {value.Temperature}, Humidity: {value.Humidity}, Windy: {value.Windy}")
+        '''
+
+        #for key in self.class_priors:
+         
+            #conditional_probability = self.class_priors[key]
+
+            
+            #conditional_probability *= self.likelihoods[key][row]
+        #print(self.class_priors)
+        #print(self.likelihoods['yes'])
 
         '''
         for key in self.class_priors:
