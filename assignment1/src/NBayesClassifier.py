@@ -8,7 +8,7 @@ class Nbayes:
         self.class_priors = {} 
         self.likelihoods = {}
 
-        self.DEBUG = True
+        self.DEBUG = False
 
     def fit(self, x_train, y_train):
         unique_classes = y_train.unique() # unique classes

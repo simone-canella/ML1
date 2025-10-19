@@ -52,9 +52,9 @@ TASK2.1: FIT METHOD
 ---------------------
 '''
 
-classifier = Nbayes()
+model = Nbayes()
 
-classifier.fit(x_train, y_train)
+model.fit(x_train, y_train)
 
 '''
 ---------------------
@@ -62,5 +62,8 @@ TASK2.2: PREDICT METHOD
 ---------------------
 '''
 
-classifier.predict(x_train)
+y_pred = model.predict(x_train)
+
+accuracy = model.test(x_train, y_train)
+print("Accuracy: ", accuracy)
 
