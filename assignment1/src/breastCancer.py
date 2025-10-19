@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import pandas as pd
+import numpy as np
 from NBayesClassifier import Nbayes
+from ucimlrepo import fetch_ucirepo
 
 # import naive bayes classifier model
 from sklearn.naive_bayes import GaussianNB
@@ -18,49 +20,41 @@ from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 
-DEBUG = False
-
 '''
 ---------------------
 TASK1: PREPARING DATA
 ---------------------
 '''
 #IMPORT DATA:
-df_weather = pd.read_csv("../data/weather.data.csv", sep='\s+')
+breast_cancer = fetch_ucirepo(id=14)
 
-if DEBUG == True:
-    print(df_weather.shape)
+#EXTRACT FEATURES AND TARGETS
+X = breast_cancer.data.features     # pandas DataFrame
+y = breast_cancer.data.targets['Class']     # pandas DataFrame
 
+#CLEAR DATA (substitute or delete missing values/row denoted by "?")
+x = X.replace('?', 'Unknown')
 
-#CLEAN DATA:
-df_weather.columns = df_weather.columns.str.replace('#', '') #substitute '#' with '' from index
+#SPLIT DATA:
+trainRatio = 0.8 #select the percentage of training-set
 
-if DEBUG == True:
-    print("UPLOADED DATAFRAME: \n", df_weather.columns, "\n") #control that is done correctly
+total_lenght = len(x)
+train_lenght = int(total_lenght * trainRatio)
 
+# Shuffle the indices
+indices = np.arange(total_lenght) #create a list of all row indices
+np.random.seed(42)  
+np.random.shuffle(indices) #random rearrangement of the indices
 
-#SPLIT TARGET:
-#x_train = df_weather.iloc[:, 0:(df_weather.columns.size - 1)] #select first 4 columns 
-x_train = df_weather.iloc[:, 0 : -1] #select first 4 columns 
+# Split indices
+train_indices = indices[:train_lenght]
+test_indices = indices[train_lenght:]
 
-if DEBUG == True:
-    print("TRAIN CONDITION: \n", x_train, "\n")
-
-y_train = df_weather.iloc[:, -1] #select last column
-
-if DEBUG == True:
-    print("TRAIN EFFECT: \n", y_train, "\n")
-
-''' TO DELETE!!!!!!!
-#COMPUTE NUMBER OF LEVELS:
-levels = list(range(len(x_train.columns))) #create a list that is big as the number of columns of x_train
-
-for i in range(0, len(x_train.columns)):
-    levels[i] = x_train.iloc[:, i].nunique() #count unique element of each column
-
-if DEBUG == True:
-    print("LEVELS FOR EACH CLASS: \n", levels, "\n")
-'''
+# Create training-set and test-set
+x_train = x.iloc[train_indices]
+x_test = x.iloc[test_indices]
+y_train = y.iloc[train_indices]
+y_test = y.iloc[test_indices]
 
 '''
 ---------------------
@@ -78,45 +72,49 @@ TASK2.2: PREDICT METHOD
 ---------------------
 '''
 
-y_pred = model.predict(x_train)
+y_pred = model.predict(x_test)
 
 '''
 ---------------------
 TASK2.3: TEST METHOD
 ---------------------
 '''
-accuracy = model.test(x_train, y_train)
-print("Accuracy: ", accuracy)
+accuracy = model.test(x_test, y_test)
+
+print("RESULT OF NAYVE BAYES CLASSIFIER\n")
+print("Accuracy         :", accuracy)
 
 '''
 ---------------------
-TASK3.0: EVALUATE DATA AND VISUALIZE DATA
+TASK3.0: EVALUATE DATA 
 ---------------------
 '''
-y_test = y_train
-x_test = x_train
 
 # Evaluating the model
-accuracy = accuracy_score(y_test, y_pred)
+accuracy_sklearn = accuracy_score(y_test, y_pred)
 precision = precision_score(y_test, y_pred, average='macro')
 recall = recall_score(y_test, y_pred, average='macro')
 f1 = f1_score(y_test, y_pred, average='macro')
 
 # Print the results
-print("Accuracy:", accuracy)
-print("Precision:", precision)
-print("Recall:", recall)
-print("F1 Score:", f1)
+print("Accuracy sklearn :", accuracy_sklearn)
+print("Precision        :", precision)
+print("Recall           :", recall)
+print("F1 Score         :", f1)
 
-# Plot result
-
-# Encode categorical features for PCA 
+'''
+---------------------
+TASK3.1: VISUALIZE DATA
+---------------------
+'''
 x_train_encoded = pd.get_dummies(x_train)
+x_test_encoded = pd.get_dummies(x_test)
+x_test_encoded = x_test_encoded.reindex(columns=x_train_encoded.columns, fill_value=0)
 
 # Fit PCA (reduce to 2D for visualization)
 pca = PCA(n_components=2)
 pca.fit(x_train_encoded)
-X_pca = pca.transform(x_train_encoded)
+X_pca = pca.transform(x_test_encoded)
 
 # Encode target labels (y_test and y_pred) into numeric values for plotting 
 le = LabelEncoder()
@@ -124,16 +122,15 @@ y_test_encoded = le.fit_transform(y_test)
 y_pred_encoded = le.transform(y_pred)
 X_error = X_pca[y_test_encoded != y_pred_encoded, :]
 
-# Define colors for each class 
+# Plot
 colors = ['red','green','blue','cyan','magenta','yellow','lightblue','gray']
 
-# Scatter plot of PCA projection 
-plt.figure(figsize=(8, 6))
-plt.scatter(X_pca[:, 0], X_pca[:, 1], s=50, marker='x', c=y_test_encoded, cmap=ListedColormap(colors[:len(set(y_test_encoded))]), label='Samples')
-
-# Mark the misclassified points 
-
-plt.plot(X_error[:,0], X_error[:,1], 'ok', markersize=15, fillstyle='none', label='Misclassified')
+plt.figure(figsize=(8,6))
+plt.scatter(X_pca[:,0], X_pca[:,1], s=50, marker='x',
+            c=y_test_encoded, cmap=ListedColormap(colors[:len(set(y_test_encoded))]),
+            label='Samples')
+plt.plot(X_error[:,0], X_error[:,1], 'ok', markersize=15,
+         fillstyle='none', label='Misclassified')
 plt.title("Naive Bayes Classification - PCA Projection")
 plt.xlabel("Principal Component 1")
 plt.ylabel("Principal Component 2")
@@ -141,4 +138,5 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
 

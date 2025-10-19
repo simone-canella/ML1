@@ -2,3 +2,7 @@ venv_linux
 venv_windows
 __pycache__
 aa* 
+*.zip
+.data
+.names
+*Index
