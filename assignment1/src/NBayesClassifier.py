@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class Nbayes:
     def __init__(self):
         self.trained = False
@@ -10,6 +9,18 @@ class Nbayes:
 
         self.DEBUG = False
 
+    """
+    Train the Naive Bayes classifier on categorical data.
+
+    Parameters:
+        x_train: Training features.
+        y_train: Target labels.
+
+    Returns:
+        None
+    Raises:
+        None
+    """
     def fit(self, x_train, y_train):
         unique_classes = y_train.unique() # unique classes
 
@@ -49,24 +60,21 @@ class Nbayes:
                 print(f"\nChecking class: {c}")
                 for f, probs in self.likelihoods[c].items():
                     total = sum(probs.values())
-                    print(f"  {f}: sum = {total:.3f}")
-
-
-        '''    
-        for key in unique_classes:  
-            subset = x_train[y_train == key] #create a a subset of x_train where appear corresponding value of y_train[key]
-            conditional_probability = {}
-            
-            for feature in range(0, len(subset.columns)):
-                count = subset.iloc[:, feature].value_counts() #count how many value occurs in the subset
-                conditional_probability[feature] = count / len(subset.iloc[:, feature]) #calculate conditional probability (number of i-value / number of total value)
-                
-            #print(conditional_probability)
-            
-        '''             
+                    print(f"  {f}: sum = {total:.3f}")             
              
         self.trained = True
     
+    """
+    Predict class labels for the provided test data.
+
+    Parameters:
+        x_test: Test features.
+
+    Returns:
+        list: Predicted class labels.
+    Raises:
+        ValueError: If model has not been trained yet.
+    """
     def predict(self, x_test):
         if not self.trained:
             raise ValueError
@@ -104,50 +112,29 @@ class Nbayes:
                 print("class probabilities: ", class_probabilities)
                 print("predicted class: ", best_class)
 
-        return y_predict
+        return y_predict           
 
-                    
+    """
+    Evaluate the model's accuracy on a labeled test set.
 
-        '''
-        for _row, value in x_test.iterrows():
-            #print(f"row: {row}, Outlook: {value.Outlook}, Temperature: {value.Temperature}, Humidity: {value.Humidity}, Windy: {value.Windy}")
-            print(f"Outlook: {value.Outlook}, Temperature: {value.Temperature}, Humidity: {value.Humidity}, Windy: {value.Windy}")
-        '''
+    Parameters:
+        X_test: Test features.
+        y_test: True class labels.
 
-        #for key in self.class_priors:
-         
-            #conditional_probability = self.class_priors[key]
+    Returns:
+        float: Accuracy (fraction of correct predictions).
+    Raises:
+        ValueError: If model has not been trained yet.
 
-            
-            #conditional_probability *= self.likelihoods[key][row]
-        #print(self.class_priors)
-        #print(self.likelihoods['yes'])
-
-        '''
-        for key in self.class_priors:
-            print("class: ", key)
-
-            for feature in self.likelihoods[key]:
-                print("feature for class: ", feature)
-                
-
-                for value in self.likelihoods[key][feature]:
-                    print("value for each feature: ", value)
-
-                    result = self.class_priors[key] * self.likelihoods[key][feature][value]
-
-                    print(result)
-        '''         
-
-        '''
-        for each class c
-            for each variable x
-                for each possible value v for variable x
-                    the number of instances of class c that have variable x == value v...
-                    ...divided by the number of instances of class c
-        '''
-           
-
+    Notes:
+    x_test == x_train for weather data-set
+    y_test == y_train for weather data-set
+    => sanity check or traning set evaluation
+    
+    x_test != x_train for breast cancer data-set
+    y_test != y_train for breast cancer data-set
+    => verify new data
+    """
     def test(self, X_test, y_test):
         if not self.trained:
             raise ValueError

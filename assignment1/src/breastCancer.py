@@ -86,7 +86,7 @@ print("Accuracy         :", accuracy)
 
 '''
 ---------------------
-TASK3.0: EVALUATE DATA 
+EVALUATE DATA 
 ---------------------
 '''
 
@@ -104,7 +104,7 @@ print("F1 Score         :", f1)
 
 '''
 ---------------------
-TASK3.1: VISUALIZE DATA
+VISUALIZE DATA
 ---------------------
 '''
 x_train_encoded = pd.get_dummies(x_train)
