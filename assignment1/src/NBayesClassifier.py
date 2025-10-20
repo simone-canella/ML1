@@ -1,3 +1,12 @@
+"""
+NBayesClassifier.py
+--------------------
+Implements a Naive Bayes classifier for categorical data with Laplace (additive) smoothing. 
+Includes methods for training (`fit`), predicting new samples (`predict`), 
+and evaluating model accuracy (`test`). 
+The goal is to build a simple, interpretable probabilistic classifier from scratch following ML theory.
+"""
+
 import numpy as np
 
 class Nbayes:

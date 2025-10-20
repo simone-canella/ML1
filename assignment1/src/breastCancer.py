@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+breastCancer.py
+----------------
+Implements and evaluates a Naive Bayes classifier on the UCI Breast Cancer dataset. 
+The script loads and cleans categorical data, trains the custom NBayes model with Laplace smoothing, 
+and evaluates performance using accuracy, precision, recall, and F1-score metrics. 
+Results are visualized through PCA-based 2D projections highlighting misclassified samples.
+"""
+
 import pandas as pd
 import numpy as np
 from NBayesClassifier import Nbayes

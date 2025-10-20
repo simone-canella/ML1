@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+weather.py
+-----------
+This script loads and preprocesses the Weather dataset, trains a custom Naive Bayes classifier, 
+and evaluates its performance using accuracy, precision, recall, and F1-score metrics. 
+It also visualizes classification results through PCA-based dimensionality reduction. 
+The goal is to test and validate the Naive Bayes implementation on a small categorical dataset.
+"""
+
 import pandas as pd
 from NBayesClassifier import Nbayes
 
