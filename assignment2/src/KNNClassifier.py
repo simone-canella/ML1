@@ -11,6 +11,12 @@ import numpy as np
 from scipy.stats import mode
 
 class Knn:
+    """
+    Initialize the kNN classifier.
+
+    Parameters:
+        k (int): Number of nearest neighbors to consider.
+    """
     def __init__(self, k):
         self.k = k
 
@@ -26,8 +32,8 @@ class Knn:
     Store the training data.
 
     Parameters:
-        X_train : Training features (N, M).
-        y_train : Target labels(1, M).
+        X_train : Training features.
+        y_train : Training labels.
 
     Return:
         None
@@ -50,10 +56,14 @@ class Knn:
     Predict the class labels for the test set.
 
     Parameters:
-        X_test : 
+        X_test : Test features
 
     Returns:
-        y_predict : 
+        y_predict : Vector of predicted labels of shape
+    
+    Raises:
+        ValueError: If the model has not been fitted yet.
+    
     """
     def predict(self, X_test):
         if not self.trained:
@@ -79,22 +89,14 @@ class Knn:
     Compute the classification accuracy.
 
     Parameters:
-        y_test: Test features.
-        y_pred: True class labels.
+        y_test: True labels for the test set.
+        y_pred: Predicted labels from predict().
 
     Returns:
-        float: Accuracy (fraction of correct predictions).
-    Raises:
-        ValueError: If model has not been trained yet.
-
-    Notes:
-    x_test == x_train for weather data-set
-    y_test == y_train for weather data-set
-    => sanity check or traning set evaluation
+        float: Accuracy score (fraction of correct predictions).
     
-    x_test != x_train for breast cancer data-set
-    y_test != y_train for breast cancer data-set
-    => verify new data
+    Raises:
+        ValueError: If the model has not been fitted yet.
     """
     def test(self, y_test, y_pred):
         if not self.trained:
