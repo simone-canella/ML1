@@ -1,3 +1,13 @@
+"""
+script_task2.py
+----------------
+Trains a shallow neural network on the UCI-CBM dataset using a simple
+hold-out split. Data is normalized, and the model is trained multiple
+times with different random initializations (multi-start) to avoid poor
+local minima. The best MSE across the runs is reported together with
+training-loss curves.
+"""
+
 from pandas import read_csv
 import numpy as np
 import tensorflow.keras as tf_keras
@@ -5,7 +15,7 @@ import matplotlib.pyplot as plt
 
 
 # read the data
-data = read_csv('UCI-CBM/data.txt', sep='\s+').values #use space as separator, and convert into nunmpy array
+data = read_csv('../UCI-CBM/data.txt', sep='\s+').values #use space as separator, and convert into nunmpy array
 c = 2
 d = data.shape[1]-c
 n = data.shape[0] #number of observation
