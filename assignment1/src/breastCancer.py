@@ -146,6 +146,12 @@ plt.ylabel("Principal Component 2")
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
+
+# Save figure for report
+filename = "breastCancer_plot.png"
+plt.savefig(filename, dpi = 200)
+print(f"Saved plot to:  {filename}")
+
 plt.show()
 
 

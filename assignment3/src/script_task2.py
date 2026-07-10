@@ -121,4 +121,10 @@ plt.ylabel('Training Loss (MSE)')
 plt.title('Training Loss Histories (Task 2)')
 plt.legend()
 plt.grid(True)
+
+# Save figure for report
+filename = "task2_plot.png"
+plt.savefig(filename, dpi = 200)
+print(f"Saved plot to:  {filename}")
+
 plt.show()

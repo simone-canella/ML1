@@ -206,4 +206,10 @@ plt.ylabel('MSE Loss')
 plt.title(f'Final Model Training (h = {best_h})')
 plt.grid(True)
 plt.legend()
+
+# Save figure for report
+filename = "task3_plot.png"
+plt.savefig(filename, dpi = 200)
+print(f"Saved plot to:  {filename}")
+
 plt.show()
